@@ -1,0 +1,20 @@
+{
+  "name": "week6",
+  "version": "1.0.0",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "author": "Yael-Renous",
+  "license": "ISC",
+  "description": "",
+  "engines": {
+    "node": "16.x"
+  },
+  "dependencies": {
+    "express": "^4.21.1",
+    "lowdb": "^6.1.1"
+  }
+}
