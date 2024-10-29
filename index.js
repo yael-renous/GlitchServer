@@ -1,11 +1,11 @@
-import express from 'express';
 import {Low} from 'lowdb';
 import { JSONFile } from 'lowdb/node';
+import express from "express";
+import { createServer } from "http";
+import { Server } from "socket.io";
 
-let app = express();
-app.use(express.json());
 
-let port= process.env.PORT || 3000;
+let port = process.env.PORT || 3000;
 
 const defaultData = {
   lines: [
@@ -17,32 +17,34 @@ const defaultData = {
   ]
 };
 
+const app = express();
+app.use(express.static('public'));
+const httpServer = createServer(app);
+const io = new Server(httpServer, { /* options */ });
+
 const adapter = new JSONFile('db.json');
 const db = new Low(adapter, defaultData);
 
+io.on("connection", (socket) => {
+  console.log('a user connected ' + socket.id);
 
-
-app.post('/new-data', (request, response) => {
-  console.log("adding new data");
-  const { text, color } = request.body;
-  db.data.lines.push({ text, color });
-  db.write().then(() => {
-    console.log("added" + db.data);
-    response.json({ task: 'success' });
-  });
-});
-
-app.get('/data', (request, response) => {
-  console.log("getting data");
   db.read().then(() => {
-    let obj = {lines: db.data.lines};
-    response.json(obj);
+    socket.emit('story-lines-updated', db.data);
+  });
+
+  socket.on('new-story-line', async (data) => {
+    await db.read();
+    db.data.lines.push(data);
+    await db.write();
+    
+    io.emit('story-lines-updated', db.data);
+  });
+
+  socket.on('disconnect', () => {
+    console.log('user disconnected ' + socket.id);
   });
 });
 
+httpServer.listen(port);
 
-app.use(express.static('public'));
 
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
-});

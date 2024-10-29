@@ -3,6 +3,14 @@
     {
       "text": "Once upon a time",
       "color": "green"
+    },
+    {
+      "text": "there was a boy",
+      "color": "#c70000"
+    },
+    {
+      "text": "named yuri",
+      "color": "#1d1e3a"
     }
   ]
 }

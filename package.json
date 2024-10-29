@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "express": "^4.21.1",
-    "lowdb": "^6.1.1"
+    "lowdb": "^6.1.1",
+    "socket.io": "^4.8.1"
   }
 }
